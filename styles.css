@@ -1,0 +1,407 @@
+/* Estilos generales */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: #000;
+    color: #fff;
+    padding: 20px 0;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    background-color: #000;
+}
+
+nav ul li {
+    margin: 0 15px;
+}
+
+nav ul li a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 10px 15px;
+    display: block;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+nav ul li a:hover {
+    background-color: #fff;
+    color: #000;
+}
+
+main {
+    padding: 20px;
+}
+
+section {
+    margin-bottom: 40px;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+section:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+}
+
+h2 {
+    border-bottom: 2px solid #000;
+    padding-bottom: 10px;
+}
+
+article {
+    margin-top: 20px;
+}
+
+article h3 {
+    margin-bottom: 10px;
+}
+
+article ul {
+    list-style: none;
+    padding: 0;
+}
+
+article ul li {
+    background-color: #f4f4f4;
+    margin-bottom: 5px;
+    padding: 10px;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+article ul li:hover {
+    background-color: #e0e0e0;
+}
+
+footer {
+    background-color: #000;
+    color: #fff;
+    text-align: center;
+    padding: 10px 0;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+}
+
+/* Estilos adicionales para mejorar la apariencia */
+header h1 {
+    font-size: 2.5em;
+    margin: 0;
+}
+
+nav ul li a.active {
+    background-color: #444;
+    color: #fff;
+}
+
+section img {
+    width: 100%;
+    height: auto;
+    max-width: 600px;
+    display: block;
+    margin: 0 auto;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+section p {
+    line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+    nav ul {
+        flex-direction: column;
+    }
+
+    nav ul li {
+        margin: 10px 0;
+    }
+
+    header h1 {
+        font-size: 2em;
+    }
+}
+
+@media (max-width: 480px) {
+    header h1 {
+        font-size: 1.5em;
+    }
+
+    nav ul li a {
+        padding: 8px 10px;
+    }
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+body {
+    animation: fadeIn 1s ease-in-out;
+}
+
+section {
+    animation: fadeIn 1.5s ease-in-out;
+}
+
+article ul li {
+    animation: fadeIn 2s ease-in-out;
+}
+
+/* Tamaño uniforme para las imágenes */
+img {
+    width: 100%;
+    height: auto;
+    max-width: 600px;
+    display: block;
+    margin: 0 auto;
+}
+
+/* Estilos adicionales para artículos */
+article {
+    background-color: #f9f9f9;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+article h3 {
+    color: #444;
+}
+
+article ul li {
+    border-left: 4px solid #000;
+    padding-left: 10px;
+}
+
+article ul li:hover {
+    border-left: 4px solid #444;
+}
+
+/* Estilos para enlaces */
+a {
+    color: #000;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+a:hover {
+    color: #444;
+}
+
+/* Estilos para botones */
+button {
+    background-color: #000;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #444;
+}
+
+/* Estilos para formularios */
+form {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+
+form input, form textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+form input[type="submit"] {
+    background-color: #000;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+form input[type="submit"]:hover {
+    background-color: #444;
+}
+
+/* Estilos para tablas */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+table th, table td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: left;
+}
+
+table th {
+    background-color: #f4f4f4;
+}
+
+table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+/* Estilos para listas */
+ul {
+    list-style-type: disc;
+    padding-left: 20px;
+}
+
+ol {
+    list-style-type: decimal;
+    padding-left: 20px;
+}
+
+/* Estilos para citas */
+blockquote {
+    background-color: #f9f9f9;
+    border-left: 4px solid #000;
+    margin: 20px 0;
+    padding: 10px 20px;
+    font-style: italic;
+}
+
+/* Estilos para código */
+code {
+    background-color: #f4f4f4;
+    padding: 2px 4px;
+    border-radius: 4px;
+    font-family: monospace;
+}
+
+/* Estilos para pre */
+pre {
+    background-color: #f4f4f4;
+    padding: 10px;
+    border-radius: 4px;
+    overflow-x: auto;
+}
+
+/* Estilos para bloques de información */
+.info {
+    background-color: #e7f3fe;
+    border-left: 4px solid #2196F3;
+    padding: 10px;
+    margin: 20px 0;
+}
+
+.warning {
+    background-color: #fff3cd;
+    border-left: 4px solid #ffecb5;
+    padding: 10px;
+    margin: 20px 0;
+}
+
+.error {
+    background-color: #f8d7da;
+    border-left: 4px solid #f5c6cb;
+    padding: 10px;
+    margin: 20px 0;
+}
+
+/* Estilos para iconos */
+.icon {
+    width: 24px;
+    height: 24px;
+    display: inline-block;
+    background-size: cover;
+    margin-right: 5px;
+}
+
+.icon-facebook {
+    background-image: url('ruta/a/tu/icono-facebook.png');
+}
+
+.icon-twitter {
+    background-image: url('ruta/a/tu/icono-twitter.png');
+}
+
+.icon-instagram {
+    background-image: url('ruta/a/tu/icono-instagram.png');
+}
+
+/* Estilos para el pie de página */
+footer {
+    background-color: #000;
+    color: #fff;
+    text-align: center;
+    padding: 10px 0;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+}
+
+/* Estilos para el contenido del pie de página */
+footer p {
+    margin: 0;
+    font-size: 0.9em;
+}
+
+footer a {
+    color: #fff;
+    text-decoration: none;
+    margin: 0 10px;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
+
+nav ul li a {
+    /* Estilos básicos para todos los enlaces */
+    text-decoration: none;
+    color: #00ff62;
+    padding: 10px 15px;
+}
+
+
+nav ul li:first-child a,
+nav ul li:nth-child(7) a {
+    background-color: #4CAF50; 
+    color: white;
+    border-radius: 5px;
+}
+
+
+nav ul li:first-child a:hover,
+nav ul li:nth-child(4) a:hover {
+    background-color: #3e8e41; 
+}
