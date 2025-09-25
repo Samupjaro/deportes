@@ -1,181 +1,463 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Información de Deportes</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="responsive.css">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Carta para Roxi — Samu</title>
+<style>
+  :root{
+    --bg:#0b0710;
+    --accent:#8a4fcf;
+    --pink:#ff7fbf;
+    --text:#f2eef8;
+    --muted:#bfb8c9;
+  }
+  html,body{height:100%;margin:0;font-family: "Segoe UI", Roboto, Arial, sans-serif; background: radial-gradient(circle at 20% 10%, #17122a 0%, var(--bg) 40%); color:var(--text);}
+  /* lock screen */
+  .screen{display:flex;align-items:center;justify-content:center;height:100vh;overflow:hidden;position:relative;}
+  .scene {width:100%;height:100%;position:relative;overflow:hidden;}
+  /* stylized moon + trees */
+  .moon{position:absolute;right:10%;top:5%;width:220px;height:220px;border-radius:50%;background:linear-gradient(180deg,#e6e6ff,#cbbcf0);box-shadow:0 0 80px rgba(200,150,255,.12);}
+  .trees{position:absolute;left:-5%;bottom:-5%;width:110%;height:75%;background:
+    radial-gradient(ellipse at 10% 90%, rgba(0,0,0,0.6) 0 15%, transparent 16%),
+    linear-gradient(180deg, rgba(5,0,10,0) 0%, rgba(0,0,0,0.8) 75%);}
+  /* lock container */
+  .lockbox{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:360px;max-width:85vw;padding:28px;border-radius:12px;background:linear-gradient(180deg, rgba(11,7,16,0.95), rgba(20,12,26,0.9));box-shadow:0 10px 30px rgba(0,0,0,0.6);border:1px solid rgba(255,255,255,0.03);text-align:center;}
+  .lockbox h1{margin:0 0 8px;font-size:20px;letter-spacing:0.6px;color:var(--pink)}
+  .lockbox p{margin:4px 0 14px;color:var(--muted);font-size:13px}
+  .code-input{display:flex;gap:10px;justify-content:center;align-items:center}
+  input[type="password"]{width:160px;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.02);color:var(--text);font-size:16px;text-align:center;outline:none}
+  button.open{padding:10px 14px;border-radius:8px;border:none;background:linear-gradient(90deg,var(--accent),#5f2aa8);color:white;cursor:pointer}
+  .smallnote{font-size:12px;color:var(--muted);margin-top:10px}
+  /* lock svg */
+  .lock-svg{width:80px;height:80px;margin:0 auto 8px;display:block;filter:drop-shadow(0 6px 18px rgba(120,60,190,.25))}
+  /* smoke */
+  .smoke{position:absolute;left:50%;top:50%;transform:translate(-50%,-20%);pointer-events:none;opacity:0;transition:opacity .6s}
+  .smoke.show{opacity:1;animation:rise 4s linear forwards}
+  @keyframes rise{0%{transform:translate(-50%,-20%) scale(.6) translateY(0);opacity:0.9}100%{transform:translate(-50%,-140%) scale(1.2);opacity:0}}
+  /* main letter screen */
+  .card-screen{display:none;min-height:100vh;padding:40px 8%;box-sizing:border-box;background:
+    radial-gradient(circle at 10% 10%, rgba(140,80,200,0.06), transparent 20%),
+    linear-gradient(180deg, rgba(6,3,8,0.6), rgba(5,2,8,0.9));
+    overflow:auto;}
+  .card-wrap{max-width:900px;margin:18px auto;background:linear-gradient(180deg, rgba(10,7,12,0.9), rgba(15,10,18,0.95));border-radius:14px;padding:28px;box-shadow:0 20px 60px rgba(0,0,0,0.6);position:relative;border:1px solid rgba(255,255,255,0.03)}
+  /* decorative gothic border with Hello Kitty bows */
+  .card-wrap:before{content:"";position:absolute;inset:-10px;border-radius:18px;padding:2px;background:linear-gradient(90deg, rgba(120,70,170,0.06), transparent);pointer-events:none}
+  .card-header{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+  .title{font-size:20px;color:var(--pink);font-weight:700}
+  .subtitle{color:var(--muted);font-size:13px}
+  .letter{color:var(--text);line-height:1.6;font-size:16px;font-family: Georgia, "Times New Roman", serif; /* serif feel like handwritten/gothic */ }
+  .paragraph{margin:10px 0}
+  /* hover effect spans */
+  .keyspan{padding:2px 4px;border-radius:4px;transition:all .22s}
+  .keyspan.teamo:hover{background:linear-gradient(90deg, rgba(255,127,191,0.08), rgba(255,127,191,0.02));box-shadow:0 6px 20px rgba(255,127,191,0.06);color:var(--pink);transform:translateY(-2px)}
+  .keyspan.roxi:hover{text-shadow:0 0 12px rgba(255,120,170,0.18);color:var(--pink)}
+  .keyspan.mia:hover{background:rgba(120,220,200,0.03);transform:translateY(-4px)}
+  /* hearts and dinos */
+  .floating-heart{position:fixed;pointer-events:none;opacity:0;z-index:40}
+  .dino-margin{position:absolute;left:-10px;bottom:20px;opacity:0.12}
+  .hello-bow{position:absolute;right:8px;top:-24px;opacity:0.9}
+  /* final button */
+  .controls{display:flex;gap:12px;align-items:center;justify-content:flex-end;margin-top:18px}
+  button.close-btn{background:#0b0b0b;border:1px solid rgba(255,255,255,0.03);color:var(--text);padding:10px 14px;border-radius:10px;cursor:pointer}
+  .countdown{font-size:13px;color:var(--muted);margin-left:8px}
+  /* small responsive */
+  @media(max-width:640px){.card-wrap{padding:18px}.lockbox{width:92%;padding:18px}}
+</style>
 </head>
 <body>
-    <header>
-        <h1>Información de Deportes</h1>
-        <nav>
-            <ul>
-                <li><a href="#futbol">Fútbol</a></li>
-                <li><a href="#baloncesto">Baloncesto</a></li>
-                <li><a href="#tenis">Tenis</a></li>
-                <li><a href="#beisbol">Béisbol</a></li>
-                <li><a href="#natacion">Natación</a></li>               
-                <li><a href="formulario.html">Formulario</a></li>
-                <li><a href="inico_sesion.html">Iniciar Sesión</a></li>
-            </ul>
-        </nav>
-    </header>
-    <main>
-        <section id="futbol">
-            <h2>Fútbol</h2>
-            <img src="https://th.bing.com/th/id/R.42d4e1195aeb2426339ba660add1caf1?rik=CIzY8YXmg5eSJw&pid=ImgRaw&r=0" alt="Imagen de Fútbol">
-            <p>El fútbol es uno de los deportes más populares del mundo. Aquí encontrarás información sobre los mejores jugadores, equipos y torneos.</p>
-            <button onclick="location.href='futbol.html';" class="btn">Más Información</button>
-            <article>
-                <h3>Mejores Jugadores</h3>
-                <ul>
-                    <li>Lionel Messi</li>
-                    <li>Cristiano Ronaldo</li>
-                    <li>Neymar Jr.</li>
-                </ul>
-            </article>
-            <article>
-                <h3>Equipos Destacados</h3>
-                <ul>
-                    <li>FC Barcelona</li>
-                    <li>Real Madrid</li>
-                    <li>Manchester United</li>
-                </ul>
-            </article>
-            <article>
-                <h3>Torneos Importantes</h3>
-                <ul>
-                    <li>Copa del Mundo</li>
-                    <li>Champions League</li>
-                    <li>Copa América</li>
-                </ul>
-            </article>
-        </section>
-        <section id="baloncesto">
-            <h2>Baloncesto</h2>
-            <img src="https://th.bing.com/th/id/R.5cffde8c17f23aa7794bfc656dad7771?rik=6BhXbVTIKV1rxA&pid=ImgRaw&r=0" alt="Imagen de Baloncesto">
-            <p>El baloncesto es un deporte dinámico y emocionante. Aquí encontrarás información sobre los mejores jugadores, equipos y torneos.</p>
-            <button onclick="location.href='baloncesto.html';" class="btn">Más Información</button>
-            <article>
-                <h3>Mejores Jugadores</h3>
-                <ul>
-                    <li>Michael Jordan</li>
-                    <li>LeBron James</li>
-                    <li>Kobe Bryant</li>
-                </ul>
-            </article>
-            <article>
-                <h3>Equipos Destacados</h3>
-                <ul>
-                    <li>Los Angeles Lakers</li>
-                    <li>Chicago Bulls</li>
-                    <li>Golden State Warriors</li>
-                </ul>
-            </article>
-            <article>
-                <h3>Torneos Importantes</h3>
-                <ul>
-                    <li>NBA</li>
-                    <li>FIBA World Cup</li>
-                    <li>EuroLeague</li>
-                </ul>
-            </article>
-        </section>
-        <section id="tenis">
-            <h2>Tenis</h2>
-            <img src="https://th.bing.com/th/id/OIP.c9irh97rqMlISnlD00XDiAHaEo?rs=1&pid=ImgDetMain" alt="Imagen de Tenis">
-            <p>El tenis es un deporte de precisión y habilidad. Aquí encontrarás información sobre los mejores jugadores, torneos y partidos históricos.</p>
-            <button onclick="location.href='tenis.html';" class="btn">Más Información</button>
-            <article>
-                <h3>Mejores Jugadores</h3>
-                <ul>
-                    <li>Roger Federer</li>
-                    <li>Rafael Nadal</li>
-                    <li>Novak Djokovic</li>
-                </ul>
-            </article>
-            <article>
-                <h3>Torneos Importantes</h3>
-                <ul>
-                    <li>Wimbledon</li>
-                    <li>Roland Garros</li>
-                    <li>US Open</li>
-                </ul>
-            </article>
-            <article>
-                <h3>Partidos Históricos</h3>
-                <ul>
-                    <li>Federer vs Nadal (Wimbledon 2008)</li>
-                    <li>Djokovic vs Nadal (Australian Open 2012)</li>
-                    <li>Sampras vs Agassi (US Open 2002)</li>
-                </ul>
-            </article>
-        </section>
-        <section id="beisbol">
-            <h2>Béisbol</h2>
-            <img src="https://images5.alphacoders.com/441/441191.jpg" alt="Imagen de Béisbol">
-            <p>El béisbol es un deporte de estrategia y habilidad. Aquí encontrarás información sobre los mejores jugadores, equipos y series mundiales.</p>
-            <button onclick="location.href='beisbol.html';" class="btn">Más Información</button>
-            <article>
-                <h3>Mejores Jugadores</h3>
-                <ul>
-                    <li>Babe Ruth</li>
-                    <li>Willie Mays</li>
-                    <li>Hank Aaron</li>
-                </ul>
-            </article>
-            <article>
-                <h3>Equipos Destacados</h3>
-                <ul>
-                    <li>New York Yankees</li>
-                    <li>Boston Red Sox</li>
-                    <li>Los Angeles Dodgers</li>
-                </ul>
-            </article>
-            <article>
-                <h3>Series Mundiales</h3>
-                <ul>
-                    <li>Yankees vs Dodgers (1956)</li>
-                    <li>Red Sox vs Cardinals (2004)</li>
-                    <li>Giants vs Royals (2014)</li>
-                </ul>
-            </article>
-        </section>
-        <section id="natacion">
-            <h2>Natación</h2>
-            <img src="https://th.bing.com/th/id/OIP.B1xBwwiyHZem46t_yL9TDAHaEK?rs=1&pid=ImgDetMain" alt="Imagen de Natación">
-            <p>La natación es un deporte de resistencia y técnica. Aquí encontrarás información sobre los mejores nadadores, competencias y récords mundiales.</p>
-            <button onclick="location.href='natacion.html';" class="btn">Más Información</button>
-            <article>
-                <h3>Mejores Nadadores</h3>
-                <ul>
-                    <li>Michael Phelps</li>
-                    <li>Ian Thorpe</li>
-                    <li>Mark Spitz</li>
-                </ul>
-            </article>
-            <article>
-                <h3>Competencias Importantes</h3>
-                <ul>
-                    <li>Juegos Olímpicos</li>
-                    <li>Campeonatos Mundiales</li>
-                    <li>Commonwealth Games</li>
-                </ul>
-            </article>
-            <article>
-                <h3>Récords Mundiales</h3>
-                <ul>
-                    <li>100m Mariposa - Michael Phelps</li>
-                    <li>200m Libre - Paul Biedermann</li>
-                    <li>400m Combinado - Michael Phelps</li>
-                </ul>
-            </article>
-        </section>
-    </main>
-    <footer>
-        <p>© 2024 SAMUEL ANDRES, CATALINA ARANGO Y SERGIO CEBALLOS.</p>
-    </footer>
+
+<!-- LOCK SCREEN -->
+<section class="screen" id="lockScreen">
+  <div class="scene">
+    <div class="moon" aria-hidden="true"></div>
+    <div class="trees" aria-hidden="true"></div>
+
+    <div class="lockbox" role="dialog" aria-label="Lock screen">
+      <!-- lock SVG -->
+      <svg class="lock-svg" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+        <g id="lockGroup">
+          <rect x="10" y="26" width="44" height="28" rx="4" fill="#2b2030" stroke="#6a4f88" stroke-width="1.6"></rect>
+          <rect x="20" y="34" width="12" height="16" rx="3" fill="#8b6fc1"></rect>
+          <path id="shackle" d="M18 26c0-6 6-10 14-10s14 4 14 10" fill="none" stroke="#7a5aa8" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path>
+        </g>
+      </svg>
+
+      <h1>Ingresa la clave para abrir la carta</h1>
+      <p>Clave de 4 dígitos — si la pones bien, se abrirá la carta</p>
+      <div class="code-input">
+        <input id="pin" type="password" maxlength="4" inputmode="numeric" pattern="[0-9]*" placeholder="0000" />
+        <button class="open" id="openBtn">Abrir</button>
+      </div>
+      <div class="smallnote">La clave es la clave de mi celular</div>
+    </div>
+
+    <!-- smoke -->
+    <svg class="smoke" id="smoke" width="320" height="240" viewBox="0 0 320 240" fill="none" aria-hidden="true">
+      <g opacity="0.85" fill="#b289ff">
+        <ellipse cx="160" cy="140" rx="80" ry="22" fill="#b289ff" opacity="0.22"></ellipse>
+        <circle cx="130" cy="120" r="26" opacity="0.14"></circle>
+        <circle cx="190" cy="110" r="36" opacity="0.12"></circle>
+        <circle cx="160" cy="100" r="22" opacity="0.2"></circle>
+      </g>
+    </svg>
+  </div>
+</section>
+
+<!-- CARD SCREEN -->
+<section class="card-screen" id="cardScreen" aria-hidden="true">
+  <div class="card-wrap" role="main">
+    <div class="card-header">
+      <div>
+        <div class="title">Carta para Roxi</div>
+        <div class="subtitle">De: Samu — Un mensaje con cariño y responsabilidad</div>
+      </div>
+      <!-- small hello bow svg decorative -->
+      <svg class="hello-bow" width="56" height="56" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M6 12c-2 0-4-2-4-4s2-3 4-3 3 2 3 4-1 3-3 3zm12 0c2 0 4-2 4-4s-2-3-4-3-3 2-3 4 1 3 3 3z" fill="pink" opacity="0.9"/>
+        <circle cx="12" cy="6" r="2" fill="#ff7fbf"/>
+      </svg>
+    </div>
+
+    <div class="letter" id="letter">
+      <!-- We'll inject paragraphs by JS to ensure many paragraphs and special spans -->
+    </div>
+
+    <!-- decorative small dinosaur -->
+    <svg class="dino-margin" width="120" height="80" viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <g id="dino" transform="translate(0,10)">
+        <ellipse cx="40" cy="80" rx="14" ry="8" fill="#9be0c8"/>
+        <path d="M8 68 q32 -40 72 -22 q-6 -12 24 -18 q18 -4 46 10 q-10 18 -2 30 q-60 -10 -90 5" fill="#86d6af"/>
+        <circle cx="58" cy="48" r="4" fill="#193524"/>
+      </g>
+    </svg>
+
+    <div class="controls">
+      <div class="countdown" id="countdownText">Regresa en 2 días</div>
+      <button class="close-btn" id="closeBtn">Cerrar carta</button>
+    </div>
+  </div>
+
+  <!-- floating hearts container -->
+  <canvas id="heartsCanvas" class="floating-heart"></canvas>
+</section>
+
+<script>
+/* ---------- SETTINGS ---------- */
+const CORRECT_PIN = "0704";
+const COUNTDOWN_HOURS = 48; // 2 days
+
+/* ---------- LOCK LOGIC ---------- */
+const pinInput = document.getElementById('pin');
+const openBtn = document.getElementById('openBtn');
+const lockScreen = document.getElementById('lockScreen');
+const cardScreen = document.getElementById('cardScreen');
+const smoke = document.getElementById('smoke');
+const lockShackle = document.getElementById('shackle');
+
+/* small helper for show error */
+function flashInput() {
+  pinInput.style.transition = "transform .08s";
+  pinInput.style.transform = "translateX(-6px)";
+  setTimeout(()=>pinInput.style.transform="translateX(6px)",80);
+  setTimeout(()=>pinInput.style.transform="translateX(0)",160);
+}
+
+openBtn.addEventListener('click', tryOpen);
+pinInput.addEventListener('keydown', (e)=>{ if(e.key==='Enter') tryOpen(); });
+
+function tryOpen() {
+  const v = pinInput.value.trim();
+  if(v === CORRECT_PIN){
+    unlockSequence();
+  } else {
+    flashInput();
+  }
+}
+
+function unlockSequence(){
+  // animate shackle rotate (fake open) and show smoke then show card
+  lockScreen.querySelector('.lock-svg').style.transform="translateY(-8px) rotate(-8deg)";
+  smoke.classList.add('show');
+  setTimeout(()=>{
+    // reveal card screen
+    lockScreen.style.display='none';
+    cardScreen.style.display='block';
+    cardScreen.setAttribute('aria-hidden','false');
+    startBackgroundMusic();
+  }, 900);
+}
+
+/* ---------- LETTER CONTENT ---------- */
+/* Build paragraphs using Samu's inputs and the user-provided main paragraph */
+const paragraphs = [
+  `Roxi, no sé por dónde empezar cuando pienso en todo lo que significas para mí, porque cada recuerdo contigo tiene un color, una textura y un latido propio, me duele en lo más profundo admitir que fui quien te lastimó, y por eso primero te pido perdón, perdóname por todo, por todo es todo, todo lo que hice mal, todo lo que callé y todo lo que te hizo sufrir, sé que ya tomaste una decisión y yo también la he tomado, no quiero insistir ni forzar nada que tú no quieras, mi deseo es que, aunque nos alejemos, lo que quede de nosotros sea verdad y respeto, yo no soy el hombre que tú mereces ni el que tú quieres a tu lado ahora mismo, eso me lo repito para no engañarme, y aunque me duela decirlo, prefiero ver claro y actuar con honestidad, tú fuiste muchas cosas para mí, novia, amiga, confidente y hasta una mamá cuando más lo necesité, me diste cuidados, lecciones y refugio, me regalaste confianza y me corregiste con cariño, recuerdo cuando te quedabas tranquila cerca de mí, cuando me dejabas intentar arreglarte los crespitos aunque no me quedaran bien, esos momentos pequeños fueron gigantes en mi corazón, tu sonrisa, tus ojos cafés claros, tus crespos y esa forma tuya de mirar la vida se quedaron grabados en mí, me enseñaste a valorar las cosas simples y a ser mejor, incluso cuando yo no supe corresponder como debía, me enamoré de ti por muchas razones, por tu fortaleza, por tu sinceridad, por la manera en que a veces eras juiciosa y otras veces la persona más divertida que conocí, me enamoré hasta de tus rulos y de tus silencios, no me arrepiento de haberte amado, me arrepiento de haberte fallado, eso pesa sobre mí y por eso tomo esta decisión de alejarme, para no ser un dolor más en tu vida, para no poner a tu familia en una posición difícil por mis actos, a veces el amor también implica soltar, incluso cuando la mano que quiero es la tuya, dejarte ir puede ser el acto más amoroso que tenga para ofrecerte ahora, te doy gracias por cada enseñanza, por cada regaño hecho con cariño y por las veces que me protegiste, tú me cuidaste aunque muchas veces yo no supe cuidarme a mí mismo, fuiste y eres mi todo, no hay exageración en decirlo, cada plan que imaginé incluía tu risa y tu compañía, por eso me duele tanto escribir estas palabras, quiero que encuentres la paz que mereces, deseo que te rías sin miedo, que duermas tranquila y que no cargues más con el peso de mis errores, ojalá tus días estén llenos de calma y alegría, sé que tu familia te ama y que ellos quieren lo mejor para ti, por eso me alejo también de ellos, para que puedan vivir sin la sombra de mis faltas y para que su vínculo contigo se fortalezca sin preocupaciones, le pediré a Dios cada día que te proteja y que te guíe, que te abra puertas y que te cuide en cada camino que elijas, porque tú mereces todas las bendiciones y más, no quiero que pienses que me voy por cobardía, me voy por responsabilidad, me voy para intentar cambiar, para aprender de verdad y para no volver a ser la persona que te hizo daño, te amaré siempre, eso no cambia, mi amor por ti será una constante silenciosa, un deseo de bien aunque esté lejos, te llevo en el pecho y en lo más íntimo de mis recuerdos, ojalá encuentres a ese hombre que mereces, que te respete, que valore tus sueños, que te cuide como yo no supe hacerlo, y que construya contigo el hogar y la tranquilidad que yo fallé en dar, me despido con gratitud, gracias por cada sonrisa, por cada lágrima compartida, por enseñarme tanto sobre el amor y sobre mí mismo, gracias por haber sido luz en mis días más confusos, no es un adiós eterno, es un hasta luego con esperanza y con trabajo por delante, si el destino y el cambio me permiten volver siendo mejor, quisiera que ese regreso sea digno de ti, hasta que la vida nos ponga en el mismo lugar otra vez me conformo con que encuentres felicidad, con que crezcas y con que llegues a todo lo que te propongas, sin mí quizá, pero con todo mi cariño, si alguna vez necesitas algo que yo pueda dar desde lejos lo haré con responsabilidad, mi compromiso con Mía y con las cosas que debo asumir seguirá, aunque no esté a tu lado, cumpliré con lo que me corresponde, Roxi te amo hoy y te amaré mientras exista memoria en mí, te deseo un futuro pleno, sincero y luminoso, gracias por haberme amado, por haberme enseñado y por haber sido tú, con todo mi cariño, arrepentimiento y gratitud, Samuel`,
+
+  "Roxi, no hay forma fácil de decir lo que siento sin que mi voz tiemble: lo siento por todo. Perdóname por todo, porque en ese 'todo' está lo que más me pesa y me duele.",
+  "Desde el primer día encontré en ti una fuerza que no esperaba: tus crespos, tus ojos, tu risa; todo eso me enseñó a querer, a soñar y a desear ser mejor.",
+  "Sé que mis errores te lastimaron y que tomaste una decisión; yo también tomé la mía: alejarme para no seguir causándote dolor.",
+  "No soy el hombre que necesitas ahora, y aceptar eso me duele más que cualquier otra cosa, pero también me libera para cambiar con honestidad.",
+  "Fuiste novia, amiga, confidente y hasta una madre para mí cuando lo necesité: me enseñaste, me corregiste y me protegiste con cariño.",
+  "Recuerdo tus manos arreglando tus crespos, y cómo me dejabas intentar aunque no supiera hacerlo bien; esos momentos fueron pura ternura para mí.",
+  "Me enamoré de tu sinceridad, de tu fortaleza y hasta de la forma en que a veces eras celosa porque demostraba cuánto te importaba lo que vivíamos.",
+  "Quiero que seas feliz y tranquila; por eso me alejo, para que no cargues con mis errores ni por mi culpa pierdas la paz con tu familia.",
+  "Pido a Dios que fortalezca el vínculo entre ustedes, que dejen atrás los malos momentos y que encuentren siempre unidad y comprensión.",
+  "Te doy las gracias por cada enseñanza, por cada regaño hecho con cariño y por cada vez que me cuidaste como alguien que te importaba de verdad.",
+  "No es cobardía: es responsabilidad. Sé que debo aprender con el tiempo y con esfuerzo, y esto es parte de ese proceso.",
+  "Te amaré siempre en silencio, con respeto y con la esperanza de que la vida te devuelva todo lo bueno que tú das al mundo.",
+  "Deseo que encuentres a quien te respete, que valore tus sueños y que te dé la tranquilidad que yo no supe ofrecerte.",
+  "Aunque me aleje, mi compromiso con lo que debo asumir sigue firme: responderé por Mía y cumpliré con mis responsabilidades siempre.",
+  "Te pido perdón por las mentiras y por cualquier tristeza que te llevé; te pido perdón por las veces que no fui la persona que prometí ser.",
+  "Recuerda las risas, los momentos simples y las pequeñas cosas que nos hicieron felices; guarda lo bueno y deja que el resto se vaya.",
+  "Mi deseo más sincero es que crezcas, que alcances tus metas y que tengas una vida plena, sea conmigo o sin mí al lado.",
+  "Me separo por amor: porque amarte significa, hoy, dejarte ir para que puedas sanar y volar sin lastres.",
+  "Si algún día vuelvo, quiero volver siendo alguien digno de tu confianza y de tu cariño, pero eso depende del trabajo que haga ahora.",
+  "Te agradezco cada gesto, cada palabra y cada cuidado; gracias por enseñarme a querer desde lo verdadero.",
+  "Que la paz te acompañe siempre, que la risa llena tus días y que el cariño de tu familia sea tu refugio cuando lo necesites.",
+  "Siempre serás mi todo, Roxi. Con amor, Samu."
+];
+
+/* Insert into DOM with special spans for words to animate */
+const letterEl = document.getElementById('letter');
+
+function markupText(text){
+  // Put span classes for keywords: "Te amo" (te amo), "Roxi" (roxi), "Mía" or "Mia" (mia), "perdón" "gracias"
+  return text
+    .replace(/\b(Te amo|te amo)\b/gi, '<span class="keyspan teamo">$1</span>')
+    .replace(/\b(Roxi)\b/gi, '<span class="keyspan roxi">$1</span>')
+    .replace(/\b(Mía|Mia|mia|MÍA)\b/gi, '<span class="keyspan mia">$1</span>')
+    .replace(/\b(perd[oó]n|Perd[oó]n)\b/gi, '<span class="keyspan pard">$1</span>')
+    .replace(/\b(gracias|Gracias)\b/gi, '<span class="keyspan gte">$1</span>');
+}
+
+paragraphs.forEach(p=>{
+  const pEl = document.createElement('div');
+  pEl.className = "paragraph";
+  pEl.innerHTML = markupText(p);
+  letterEl.appendChild(pEl);
+});
+
+/* ---------- HOVER + CLICK EFFECTS (speech, smoke, hearts, dino) ---------- */
+function speakText(text, rate=0.95, pitch=1.15){
+  if(!('speechSynthesis' in window)) return;
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.lang = 'es-ES';
+  utter.rate = rate;
+  utter.pitch = pitch;
+  utter.volume = 0.9;
+  // try to choose a lighter voice
+  const voices = speechSynthesis.getVoices();
+  if(voices.length) utter.voice = voices.find(v=>/female|woman|girl|maria|rosa|clara/i.test(v.name)) || voices[0];
+  speechSynthesis.cancel();
+  speechSynthesis.speak(utter);
+}
+
+document.querySelectorAll('.keyspan.teamo').forEach(el=>{
+  el.addEventListener('mouseenter', ()=>{ el.style.color = 'var(--pink)'; speakText('Te amo', 1, 1.4); });
+});
+document.querySelectorAll('.keyspan.roxi').forEach(el=>{
+  el.addEventListener('mouseenter', ()=>{
+    el.style.transform = 'scale(1.04)';
+    // little sparkle effect
+    createTemporarySparkles(el);
+  });
+});
+document.querySelectorAll('.keyspan.mia').forEach(el=>{
+  el.addEventListener('mouseenter', ()=>{
+    // animate small dino across bottom
+    animateDinoWalk();
+  });
+});
+document.querySelectorAll('.keyspan.pard, .keyspan.gte').forEach(el=>{
+  el.addEventListener('click', (e)=>{
+    showSmokeEffect(e.target);
+    speakText(e.target.innerText, 1.1, 0.9);
+  });
+});
+
+/* sparkles */
+function createTemporarySparkles(target){
+  const rect = target.getBoundingClientRect();
+  const sparkle = document.createElement('div');
+  sparkle.style.position='fixed';
+  sparkle.style.left=(rect.left + rect.width/2)+'px';
+  sparkle.style.top=(rect.top - 8)+'px';
+  sparkle.style.width='12px';
+  sparkle.style.height='12px';
+  sparkle.style.borderRadius='50%';
+  sparkle.style.background='radial-gradient(circle,#ffd6ea,#ff7fbf)';
+  sparkle.style.boxShadow='0 0 12px rgba(255,120,170,.6)';
+  sparkle.style.pointerEvents='none';
+  document.body.appendChild(sparkle);
+  sparkle.animate([{transform:'translateY(0) scale(1)',opacity:1},{transform:'translateY(-30px) scale(.4)',opacity:0}],{duration:700,easing:'ease-out'});
+  setTimeout(()=>sparkle.remove(),800);
+}
+
+/* smoke effect near clicked word */
+function showSmokeEffect(target){
+  const el = document.createElement('div');
+  el.style.position='absolute';
+  const r = target.getBoundingClientRect();
+  el.style.left=(r.left + window.scrollX - 40)+'px';
+  el.style.top=(r.top + window.scrollY - 20)+'px';
+  el.style.width='120px';
+  el.style.height='80px';
+  el.style.pointerEvents='none';
+  el.style.background='radial-gradient(circle at 30% 30%, rgba(178,137,255,0.18), transparent 20%), radial-gradient(circle at 70% 60%, rgba(130,84,200,0.12), transparent 20%)';
+  el.style.borderRadius='50%';
+  el.style.opacity='0';
+  el.style.filter='blur(8px)';
+  document.body.appendChild(el);
+  requestAnimationFrame(()=>{ el.style.transition='transform 900ms ease-out, opacity 900ms ease-out'; el.style.transform='translateY(-60px) scale(1.2)'; el.style.opacity='1';});
+  setTimeout(()=>{ el.style.opacity='0'; },900);
+  setTimeout(()=>el.remove(),1400);
+}
+
+/* dino walk: create or move an SVG across bottom of cardScreen */
+let dinoActive = false;
+function animateDinoWalk(){
+  if(dinoActive) return;
+  dinoActive = true;
+  const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
+  svg.setAttribute('width','220');
+  svg.setAttribute('height','120');
+  svg.style.position='fixed';
+  svg.style.left='-260px';
+  svg.style.bottom='8%';
+  svg.style.zIndex='30';
+  svg.style.opacity='0.96';
+  svg.innerHTML = `
+    <g transform="translate(0,10)">
+      <ellipse cx="60" cy="90" rx="16" ry="8" fill="#9be0c8"/>
+      <path d="M12 78 q36 -44 84 -24 q-6 -12 28 -18 q20 -4 52 10 q-12 22 -4 34 q-72 -10 -108 6" fill="#86d6af"/>
+      <circle cx="88" cy="48" r="5" fill="#193524"/>
+    </g>
+  `;
+  document.body.appendChild(svg);
+  const anim = svg.animate([{transform:'translateX(0px)'},{transform:'translateX(1300px)'}],{duration:4200,iterations:1,easing:'linear'});
+  anim.onfinish = ()=>{ svg.remove(); dinoActive=false; };
+}
+
+/* ---------- HEARTS CANVAS ANIMATION ---------- */
+const canvas = document.getElementById('heartsCanvas');
+const ctx = canvas.getContext('2d');
+function resizeCanvas(){ canvas.width = innerWidth; canvas.height = innerHeight; canvas.style.left='0'; canvas.style.top='0'; canvas.style.width='100%'; canvas.style.height='100%'; canvas.style.zIndex=35; canvas.style.pointerEvents='none'; }
+resizeCanvas(); window.addEventListener('resize', resizeCanvas);
+
+const hearts = [];
+function spawnHeart(){
+  hearts.push({
+    x:Math.random()*canvas.width,
+    y:canvas.height + 20,
+    size: 8 + Math.random()*12,
+    speed: 0.6 + Math.random()*1.4,
+    alpha: 0.9,
+    hue: 320 + Math.random()*20
+  });
+}
+function drawHearts(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  for(let i=hearts.length-1;i>=0;i--){
+    const h = hearts[i];
+    h.y -= h.speed;
+    h.x += Math.sin(h.y/40)*0.6;
+    h.alpha -= 0.0015;
+    ctx.fillStyle = `rgba(255,127,191,${h.alpha})`;
+    ctx.beginPath();
+    // simple heart path
+    const x = h.x, y = h.y, s = h.size;
+    ctx.moveTo(x, y);
+    ctx.bezierCurveTo(x, y - s*0.6, x - s, y - s*0.6, x - s, y - s*0.15);
+    ctx.bezierCurveTo(x - s, y + s*0.6, x, y + s*0.9, x, y + s*1.4);
+    ctx.bezierCurveTo(x, y + s*0.9, x + s, y + s*0.6, x + s, y - s*0.15);
+    ctx.bezierCurveTo(x + s, y - s*0.6, x, y - s*0.6, x, y);
+    ctx.fill();
+    if(h.alpha <= 0) hearts.splice(i,1);
+  }
+}
+setInterval(()=>{ if(Math.random()<0.6) spawnHeart(); },420);
+function heartLoop(){ drawHearts(); requestAnimationFrame(heartLoop); }
+heartLoop();
+
+/* ---------- BACKGROUND MUSIC (simple gentle loop via WebAudio) ---------- */
+let audioCtx, musicPlaying=false;
+function startBackgroundMusic(){
+  if(musicPlaying) return;
+  try{
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    musicPlaying = true;
+    // simple soft arpeggio with triangle oscillator and bells
+    const master = audioCtx.createGain(); master.gain.value = 0.06; master.connect(audioCtx.destination);
+    const notes = [440, 523.25, 392, 349.23]; // A4 C5 G4 F4 - simple loop
+    let i = 0;
+    function playNote(){
+      const t = audioCtx.currentTime;
+      const o = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      o.type = 'sine';
+      o.frequency.setValueAtTime(notes[i%notes.length], t);
+      g.gain.setValueAtTime(0, t);
+      g.gain.linearRampToValueAtTime(0.08, t+0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, t+1.8);
+      o.connect(g); g.connect(master);
+      o.start(t); o.stop(t+2);
+      i++;
+      setTimeout(playNote, 900);
+    }
+    playNote();
+  }catch(e){
+    console.log('Audio error', e);
+  }
+}
+
+/* ---------- FINAL TEXT + STARS FLICKER ---------- */
+/* Add a subtle star field in background by CSS? We'll do small flicker by JS on moon */
+(function starFlicker(){
+  const moon = document.querySelector('.moon');
+  let on=false;
+  setInterval(()=>{ moon.style.filter = `blur(${on?1:6}px) drop-shadow(0 0 ${on?40:2}px rgba(200,150,255,${on?0.18:0.06}))`; on = !on; }, 1500);
+})();
+
+/* ---------- COUNTDOWN (2 days) ---------- */
+const countdownText = document.getElementById('countdownText');
+let deadline = Date.now() + COUNTDOWN_HOURS*3600*1000;
+function updateCountdown(){
+  const now = Date.now();
+  let diff = deadline - now;
+  if(diff < 0) diff = 0;
+  const days = Math.floor(diff / (24*3600*1000));
+  const hours = Math.floor((diff % (24*3600*1000)) / 3600000);
+  const minutes = Math.floor((diff % 3600000) / 60000);
+  const seconds = Math.floor((diff % 60000) / 1000);
+  countdownText.textContent = `Regresa en ${days}d ${hours}h ${minutes}m ${seconds}s`;
+}
+updateCountdown(); setInterval(updateCountdown, 1000);
+
+/* ---------- CLOSE BUTTON: TV OFF ANIMATION ---------- */
+document.getElementById('closeBtn').addEventListener('click', ()=>{
+  // fancy fade-out like old TV: canvas horizontal shrink
+  document.querySelector('.card-wrap').animate([{filter:'brightness(1)'},{filter:'brightness(0.2)'}],{duration:800,fill:'forwards'});
+  const overlay = document.createElement('div');
+  overlay.style.position='fixed';
+  overlay.style.inset='0';
+  overlay.style.background='#000';
+  overlay.style.opacity='0';
+  overlay.style.zIndex=999;
+  overlay.style.pointerEvents='none';
+  document.body.appendChild(overlay);
+  overlay.animate([{opacity:0},{opacity:1}],{duration:900,fill:'forwards',easing:'ease-in'});
+  // after fade, show lock screen again after 500ms (simulate power off). But spec wanted screen off - we'll leave overlay.
+  setTimeout(()=>{ overlay.style.pointerEvents='auto'; },1200);
+});
+
+/* Accessibility: allow unlocking directly if querystring contains ?pin=0704 */
+const params = new URLSearchParams(location.search);
+if(params.get('pin') === CORRECT_PIN) { unlockSequence(); }
+
+/* Prevent accidental speech overlap */
+window.addEventListener('beforeunload', ()=>{ if(window.speechSynthesis) window.speechSynthesis.cancel(); });
+
+/* End of script */
+</script>
 </body>
 </html>
